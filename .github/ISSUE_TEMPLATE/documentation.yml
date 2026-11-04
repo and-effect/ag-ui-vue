@@ -1,0 +1,17 @@
+name: Documentation
+description: Something in the docs or examples is wrong, missing or unclear.
+labels: [documentation]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Where?
+      description: Link to the page, section or example.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong or missing?
+    validations:
+      required: true
