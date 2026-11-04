@@ -1,0 +1,37 @@
+.idea
+.ipynb_checkpoints
+.mypy_cache
+.vscode
+__pycache__
+.pytest_cache
+htmlcov
+dist
+site
+.coverage*
+coverage.xml
+.netlify
+*.db
+log.txt
+Pipfile.lock
+env3.*
+env
+.env
+docs_build
+site_build
+venv
+docs.zip
+archive.zip
+node_modules/
+# vim temporary files
+*~
+.*.sw?
+.cache
+
+# macOS
+.DS_Store
+
+# docs
+public/
+
+# Claude Code local settings
+.claude/settings.local.json
