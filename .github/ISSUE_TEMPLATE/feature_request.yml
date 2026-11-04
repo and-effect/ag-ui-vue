@@ -1,0 +1,33 @@
+name: Feature request
+description: Suggest a new composable, option or component.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ag-ui-vue is a thin, headless adapter over `@ag-ui/client`: it bridges the AG-UI protocol into Vue reactivity and
+        ships no styles or design-system components. Requests that fit that scope are the most likely to be accepted.
+        Please wait for a maintainer to agree on the approach before opening a pull request.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do, and what makes it hard today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: The API you'd like, ideally as a short usage example.
+      render: ts
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and workarounds
+      description: What you've tried, e.g. using the raw `agent` or `useAgentEvent`.
+  - type: input
+    id: protocol
+    attributes:
+      label: Related AG-UI feature
+      description: Link to the AG-UI docs or spec, if this is about a protocol feature.

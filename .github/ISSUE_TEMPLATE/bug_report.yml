@@ -1,0 +1,58 @@
+name: Bug report
+description: Something in ag-ui-vue doesn't work as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please check the [existing issues](https://github.com/and-effect/ag-ui-vue/issues) first.
+        Security problems go to [SECURITY.md](https://github.com/and-effect/ag-ui-vue/blob/main/SECURITY.md), not here.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: |
+        The smallest code that shows the problem. A link to a repository or StackBlitz is best.
+        If the backend matters, include the AG-UI events it sends (from the browser's network tab).
+      render: ts
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: ag-ui-vue version
+      placeholder: 0.5.0
+    validations:
+      required: true
+  - type: input
+    id: peer-versions
+    attributes:
+      label: vue, @ag-ui/client and @ag-ui/core versions
+      description: "`npm ls vue @ag-ui/client @ag-ui/core`"
+    validations:
+      required: true
+  - type: dropdown
+    id: backend
+    attributes:
+      label: Backend
+      options:
+        - PydanticAI
+        - LangGraph
+        - Mastra
+        - CrewAI
+        - Custom / other
+        - Not backend-related
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or error messages
+      render: text

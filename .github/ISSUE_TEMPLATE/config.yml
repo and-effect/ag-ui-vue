@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/and-effect/ag-ui-vue/security/advisories/new
+    about: Please report security issues privately, not as a public issue.
+  - name: AG-UI protocol questions
+    url: https://docs.ag-ui.com/
+    about: Questions about the protocol itself, independent of Vue.
