@@ -111,11 +111,11 @@ jobs:
       # Publishing a tarball runs no lifecycle scripts.
       - name: Publish
         if: github.event_name == 'push'
-        run: npm publish package/*.tgz --provenance --access public
+        run: npm publish ./package/*.tgz --provenance --access public
         env:
           # TEMPORARY: only for the very first publish of v0.5.0.
           # Remove once the trusted publisher is configured on npmjs.com.
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish (dry run)
         if: github.event_name == 'workflow_dispatch'
-        run: npm publish package/*.tgz --dry-run --provenance --access public
+        run: npm publish ./package/*.tgz --dry-run --provenance --access public
