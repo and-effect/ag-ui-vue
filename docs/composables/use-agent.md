@@ -27,9 +27,9 @@ const { send } = useAgent({
 
 Static values still work — `MaybeRefOrGetter` is a superset, so existing usage is unchanged.
 
-## Handling failed requests — `onError` (token refresh & retry)
+## Token refresh and retry
 
-Resolving `headers` per request keeps the token fresh on user-initiated sends, but it can't recover a request that fails *because* the token expired in flight. The `onError` hook closes that gap: it fires when any request fails — including ones `useAgent` issues internally, such as tool-result continuations via `continueRun` — and can refresh credentials and ask for a single retry.
+`onError` lets you refresh credentials and retry a failed request. Resolving `headers` per request keeps the token fresh on user-initiated sends, but it can't recover a request that fails *because* the token expired in flight. The `onError` hook closes that gap: it fires when any request fails — including ones `useAgent` issues internally, such as tool-result continuations via `continueRun` — and can refresh credentials and ask for a single retry.
 
 ```ts
 const token = ref('...')
@@ -54,7 +54,7 @@ const { send } = useAgent({
 - The hook is `async`, so you can `await` a backoff delay before returning `{ retry: true }` (e.g. for transient network errors). Omitting it entirely keeps the previous behavior.
 - The retry re-sends the **same `run_id`** — a refresh-and-retry is one logical run, not two (see [Run identity](#run-identity)). That's clean for a `401`, where the request never reached the model. But `onError` fires for *every* failure, so retrying after a partially-streamed response re-sends that run id alongside the partial assistant message already in the transcript. If your backend keys run state on `run_id` — a LangGraph checkpointer, say — retry only the failures you know left no server-side run behind.
 
-## Error codes — `errorCode`
+## Error codes
 
 `errorCode` holds a machine-readable code for `error` when the source provides one, so you can branch on a fixed value instead of the message text:
 
@@ -66,9 +66,9 @@ It is `null` otherwise, including for network and HTTP errors (use `onError`'s `
 
 The type is `AgentErrorCode`, which autocompletes the values above. Backend codes and these share one string, so a backend that sends `'abort'` reads the same as a client-side abort.
 
-## Run outcome and token usage — `lastOutcome`, `usage`
+## Run outcome and token usage
 
-`lastOutcome` says how the most recent run ended:
+`lastOutcome` says how the most recent run ended, and `usage` how many tokens it reported. The outcome is one of:
 
 - `{ type: 'success' }`, `{ type: 'interrupt', interrupts }` or `{ type: 'cancelled' }`, as reported by `RUN_FINISHED` (a missing outcome counts as `success`).
 - `{ type: 'error', code }` for a `RUN_ERROR` or a failed request. `code` is the same value as `errorCode`.
@@ -123,7 +123,7 @@ Override the id policy with `runIdFactory` (symmetric with `useThreads`' `idFact
 useAgent({ url: '/api/agent', runIdFactory: () => `run_${traceId()}` })
 ```
 
-Because a retry reuses the id, a `run_id` identifies one *logical* run rather than one HTTP request — the server can see two requests bearing it. Don't use it as a unique key for a server-side request record, and if your backend keys run state on `run_id`, see the caveat under [Handling failed requests](#handling-failed-requests--onerror-token-refresh--retry) about which failures are safe to retry.
+Because a retry reuses the id, a `run_id` identifies one *logical* run rather than one HTTP request — the server can see two requests bearing it. Don't use it as a unique key for a server-side request record, and if your backend keys run state on `run_id`, see the caveat under [Token refresh and retry](#token-refresh-and-retry) about which failures are safe to retry.
 
 **Which run produced this message?** `runForMessage(id)` answers it, live and after a reload:
 

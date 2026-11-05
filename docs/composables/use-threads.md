@@ -44,7 +44,7 @@ const {
 
 Threads are persisted after every completed run. Titles are auto-generated from the first user message. See [`examples/playground/src/views/ThreadsView.vue`](../../examples/playground/src/views/ThreadsView.vue) for a full sidebar demo with inline title editing, delete buttons, and timestamps.
 
-`url`, `headers`, and `onError` are configured on the `useAgent` call — pass a `headers` getter for a token that refreshes mid-session, and an `onError` hook to recover a failed run (e.g. `401` → refresh → `{ retry: true }`). See [`useAgent`](use-agent.md) and [Handling failed requests](use-agent.md#handling-failed-requests--onerror-token-refresh--retry).
+`url`, `headers`, and `onError` are configured on the `useAgent` call — pass a `headers` getter for a token that refreshes mid-session, and an `onError` hook to recover a failed run (e.g. `401` → refresh → `{ retry: true }`). See [`useAgent`](use-agent.md) and [Token refresh and retry](use-agent.md#token-refresh-and-retry).
 
 ```ts
 const token = ref('…')
