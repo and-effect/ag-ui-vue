@@ -75,7 +75,7 @@ Messages stream in as the agent responds. The [docs](docs/index.md) cover everyt
 | [Multimodal input](docs/composables/use-agent.md#multimodal-messages) | Send images, audio, video and documents alongside text. |
 | [`useFrontendTool`](docs/composables/use-frontend-tool.md) | Tools the agent calls in the browser. They run automatically or wait for the user's approval. |
 | [`useInterrupts`](docs/composables/use-interrupts.md) | Approve, edit or reject server-side tool calls when a run pauses. |
-| [`useGenerativeUI`](docs/composables/use-generative-ui.md) | Renders your Vue components for tool calls, with props streaming in as the arguments arrive. |
+| [`useGenerativeUI`](docs/composables/use-generative-ui.md) | Renders your Vue components for tool calls, with an optional loading component while the arguments stream. |
 
 <img src="https://raw.githubusercontent.com/and-effect/ag-ui-vue/main/.github/assets/ag-ui-vue-gen-ai.gif" width="880" alt="The agent's tool calls render as Vue components inside the chat">
 
@@ -118,7 +118,7 @@ Switching threads swaps the conversation on the same agent, so tools and subscri
 | [`AgMessageInput`](docs/components.md#agmessageinput) | Input state, send and stop, file attachments. |
 | [`AgThreadList`](docs/components.md#agthreadlist) | Iterates threads with switch and delete handlers. |
 | [`AgToolCallStatus`](docs/components.md#agtoolcallstatus) | One slot per tool call status: running, awaiting result, completed, error. |
-| [`AgInterrupt`](docs/components.md#aginterrupt) | One slot per open interrupt, routed by reason, plus a Continue slot. |
+| [`AgInterrupt`](docs/components.md#aginterrupt) | One slot per open interrupt, routed by reason, plus a `#resume` slot for the Continue control. |
 
 See [Limitations](docs/limitations.md) for what is out of scope.
 

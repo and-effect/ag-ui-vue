@@ -1,6 +1,6 @@
 # `useGenerativeUI`
 
-Maps tool names to Vue components and renders them as the agent calls those tools. The composable tracks the tool call lifecycle, streams parsed args into props, and auto-registers its tools with the agent — so a bare `send()` advertises them, with nothing to wire up.
+Maps tool names to Vue components and renders them as the agent calls those tools. The composable tracks the tool call lifecycle, passes the parsed args as props once they are complete JSON, and auto-registers its tools with the agent — so a bare `send()` advertises them, with nothing to wire up.
 
 ```ts
 import { useAgent, useGenerativeUI } from '@and-effect/ag-ui-vue'
