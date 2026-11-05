@@ -3,6 +3,9 @@ name: Release
 # Publishes to npm when a vX.Y.Z tag is pushed (see "Releasing" in
 # CONTRIBUTING.md). Authenticates with npm trusted publishing (OIDC), so there
 # is no NPM_TOKEN secret; npm attaches provenance automatically.
+# TEMPORARY: the first publish (v0.5.0) uses an NPM_TOKEN, because npm only
+# accepts a trusted publisher for a package that already exists. See the
+# Publish step.
 #
 # Two jobs, so the OIDC token never shares a job with dependency code:
 # `build` installs, tests and packs without the token; `publish` holds the
@@ -85,6 +88,9 @@ jobs:
         with:
           node-version-file: .nvmrc
           package-manager-cache: false
+          # TEMPORARY, together with NODE_AUTH_TOKEN in the Publish step: writes
+          # an .npmrc that reads NODE_AUTH_TOKEN. Remove both after the first publish.
+          registry-url: https://registry.npmjs.org
 
       # Trusted publishing needs npm >= 11.5.1. An older npm falls back to
       # token auth and fails with a confusing ENEEDAUTH, so fail clearly here.
@@ -106,6 +112,10 @@ jobs:
       - name: Publish
         if: github.event_name == 'push'
         run: npm publish package/*.tgz --provenance --access public
+        env:
+          # TEMPORARY: only for the very first publish of v0.5.0.
+          # Remove once the trusted publisher is configured on npmjs.com.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish (dry run)
         if: github.event_name == 'workflow_dispatch'
         run: npm publish package/*.tgz --dry-run --provenance --access public
