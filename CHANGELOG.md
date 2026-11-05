@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-05
+
 ### Added
 - **`useInterrupts`** for AG-UI 1.0 server-side interrupts. It lists the interrupts a run paused on, lets you answer each one with `resolve(payload)` / `cancel()` (including approve-with-edits via `editedArgs`), and `resumeAll()` sends every answer as one `resume[]`. The answers can be changed until then.
 - `useAgent` gains `interrupts`, `RunOptions.resume`, and an optional `validateResumePayload` hook (no validator is bundled). `setMessages` and `useThreads` restore and persist open interrupts.
