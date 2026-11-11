@@ -1,18 +1,21 @@
 name: Release
 
-# Publishes to npm when a vX.Y.Z tag is pushed (see "Releasing" in
+# Stages a release on npm when a vX.Y.Z tag is pushed (see "Releasing" in
 # CONTRIBUTING.md). Authenticates with npm trusted publishing (OIDC), so there
-# is no NPM_TOKEN secret; npm attaches provenance automatically.
-# TEMPORARY: the first publish (v0.5.0) uses an NPM_TOKEN, because npm only
-# accepts a trusted publisher for a package that already exists. See the
-# Publish step.
+# is no npm token; npm attaches provenance automatically.
+#
+# The trusted publisher may only stage (`npm stage publish`). A staged version
+# goes live once a maintainer approves it on npmjs.com with 2FA, so a
+# compromised workflow alone cannot publish.
 #
 # Two jobs, so the OIDC token never shares a job with dependency code:
 # `build` installs, tests and packs without the token; `publish` holds the
 # token, installs nothing and only uploads the tarball `build` produced.
 #
 # Run it manually (Actions → Release → Run workflow) to rehearse a release:
-# the same jobs, ending in `npm publish --dry-run`.
+# the same jobs, ending in `npm stage publish --dry-run`. Unlike a publish dry
+# run, it fails if package.json's version is already on npm, so rehearse after
+# the version bump.
 
 on:
   push:
@@ -88,19 +91,16 @@ jobs:
         with:
           node-version-file: .nvmrc
           package-manager-cache: false
-          # TEMPORARY, together with NODE_AUTH_TOKEN in the Publish step: writes
-          # an .npmrc that reads NODE_AUTH_TOKEN. Remove both after the first publish.
-          registry-url: https://registry.npmjs.org
 
-      # Trusted publishing needs npm >= 11.5.1. An older npm falls back to
-      # token auth and fails with a confusing ENEEDAUTH, so fail clearly here.
+      # `npm stage` needs npm >= 11.15.0 (trusted publishing itself needs
+      # 11.5.1). Fail clearly here instead of with an unknown-command error.
       - name: Check npm version
         run: |
           node -e '
-            const [major, minor, patch] = process.argv[1].split(".").map(Number)
-            const ok = major > 11 || (major === 11 && (minor > 5 || (minor === 5 && patch >= 1)))
+            const [major, minor] = process.argv[1].split(".").map(Number)
+            const ok = major > 11 || (major === 11 && minor >= 15)
             console.log(`npm ${process.argv[1]}`)
-            if (!ok) { console.error("Trusted publishing needs npm >= 11.5.1"); process.exit(1) }
+            if (!ok) { console.error("npm stage needs npm >= 11.15.0"); process.exit(1) }
           ' "$(npm --version)"
 
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
@@ -108,14 +108,11 @@ jobs:
           name: package
           path: package
 
-      # Publishing a tarball runs no lifecycle scripts.
-      - name: Publish
+      # Publishing a tarball runs no lifecycle scripts. The ./ matters: without
+      # it npm reads `package/<name>.tgz` as a GitHub user/repo shorthand.
+      - name: Stage on npm
         if: github.event_name == 'push'
-        run: npm publish ./package/*.tgz --provenance --access public
-        env:
-          # TEMPORARY: only for the very first publish of v0.5.0.
-          # Remove once the trusted publisher is configured on npmjs.com.
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Publish (dry run)
+        run: npm stage publish ./package/*.tgz --provenance --access public
+      - name: Stage on npm (dry run)
         if: github.event_name == 'workflow_dispatch'
-        run: npm publish ./package/*.tgz --dry-run --provenance --access public
+        run: npm stage publish ./package/*.tgz --dry-run --provenance --access public
