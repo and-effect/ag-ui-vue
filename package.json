@@ -1,6 +1,6 @@
 {
   "name": "@and-effect/ag-ui-vue",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Vue composables for the AG-UI protocol — connect AI agents to Vue frontends",
   "type": "module",
   "license": "MIT",
