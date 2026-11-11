@@ -44,6 +44,8 @@ By submitting a contribution, you agree that it is licensed under the project's 
 1. In a release PR to `main`: `npm version x.y.z --no-git-tag-version`, and move
    the `[Unreleased]` notes into a dated `[x.y.z]` section.
 2. After merging: `git tag -a vx.y.z -m "Release vx.y.z"` on `main` and push the
-   tag. The `Release` workflow publishes to npm. To rehearse it, run the
-   workflow manually: it does everything but ends in `npm publish --dry-run`.
-3. `gh release create vx.y.z --notes-from-tag`.
+   tag. The `Release` workflow stages the version on npm. To rehearse it, run
+   the workflow manually: it does everything but ends in a dry run.
+3. Approve the staged version on npmjs.com (or `npm stage approve <stage-id>`),
+   which needs 2FA. Only then is it published.
+4. `gh release create vx.y.z --notes-from-tag`.

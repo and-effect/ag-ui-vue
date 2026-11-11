@@ -78,4 +78,6 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run lint:package
-      - run: npm publish --dry-run
+      # Lists the tarball contents. Not `npm publish --dry-run`: that checks the
+      # registry and fails whenever package.json's version is already published.
+      - run: npm pack --dry-run
