@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `useAgent`'s `streamingContent` now includes the latest chunk. It used to lag one chunk behind and stayed empty after the first token, so `AgMessageList`'s `#streaming` slot showed the text one step late.
+
 ## [0.5.0] - 2026-11-05
 
 ### Added

@@ -4,6 +4,7 @@ import { withSetup } from './helpers/withSetup'
 import { useAgent } from '../composables/useAgent'
 import { getToolRegistry } from '../composables/toolRegistry'
 import type { MockHttpAgent as MockHttpAgentType } from './helpers/mockHttpAgent'
+import { ScriptedAgent, EventType } from './helpers/scriptedAgent'
 
 /** Drain the microtask cascade (plus one macrotask). */
 const flush = () => new Promise<void>((resolve) => setTimeout(resolve, 0))
@@ -236,7 +237,7 @@ describe('useAgent', () => {
       const [result, unmount] = withSetup(() => useAgent({ url: 'http://test' }))
       const mock = getMock(result.agent)
       mock.runAgent.mockImplementationOnce(() => {
-        mock.emit('onTextMessageContentEvent', { textMessageBuffer: 'partial...' })
+        mock.emit('onTextMessageContentEvent', { event: { delta: 'partial...' }, textMessageBuffer: '' })
         return Promise.resolve({})
       })
 
@@ -263,21 +264,48 @@ describe('useAgent', () => {
       unmount()
     })
 
-    it('onTextMessageContentEvent updates streamingContent', () => {
+    it('streamingContent includes the current delta, from the first token on', () => {
       const [result, unmount] = withSetup(() => useAgent({ url: 'http://test' }))
       const mock = getMock(result.agent)
 
-      mock.emit('onTextMessageContentEvent', { textMessageBuffer: 'Hello world' })
+      // The client hands subscribers the buffer *before* appending the delta.
+      mock.emit('onTextMessageContentEvent', { event: { delta: 'Hello' }, textMessageBuffer: '' })
+      expect(result.streamingContent.value).toBe('Hello')
 
+      mock.emit('onTextMessageContentEvent', { event: { delta: ' world' }, textMessageBuffer: 'Hello' })
       expect(result.streamingContent.value).toBe('Hello world')
       unmount()
+    })
+
+    it('the real client passes a pre-delta buffer, which streamingContent relies on', async () => {
+      // Pins the client behaviour behind `textMessageBuffer + event.delta`: if
+      // the client ever starts including the delta, streamingContent would
+      // double it, and this test fails first.
+      const agent = new ScriptedAgent([
+        { type: EventType.TEXT_MESSAGE_START, messageId: 'm1', role: 'assistant' },
+        { type: EventType.TEXT_MESSAGE_CONTENT, messageId: 'm1', delta: 'Hel' },
+        { type: EventType.TEXT_MESSAGE_CONTENT, messageId: 'm1', delta: 'lo' },
+        { type: EventType.TEXT_MESSAGE_END, messageId: 'm1' },
+      ])
+      const seen: Array<{ buffer: string; delta: string }> = []
+      await agent.runAgent({}, {
+        onTextMessageContentEvent({ event, textMessageBuffer }) {
+          seen.push({ buffer: textMessageBuffer, delta: event.delta })
+        },
+      })
+
+      expect(seen).toEqual([
+        { buffer: '', delta: 'Hel' },
+        { buffer: 'Hel', delta: 'lo' },
+      ])
+      expect(agent.messages.at(-1)).toMatchObject({ id: 'm1', content: 'Hello' })
     })
 
     it('onTextMessageEndEvent clears streamingContent', () => {
       const [result, unmount] = withSetup(() => useAgent({ url: 'http://test' }))
       const mock = getMock(result.agent)
 
-      mock.emit('onTextMessageContentEvent', { textMessageBuffer: 'Some text' })
+      mock.emit('onTextMessageContentEvent', { event: { delta: 'Some text' }, textMessageBuffer: '' })
       mock.emit('onTextMessageEndEvent')
 
       expect(result.streamingContent.value).toBe('')
@@ -400,7 +428,7 @@ describe('useAgent', () => {
     it('clears streamingContent', () => {
       const [result, unmount] = withSetup(() => useAgent({ url: 'http://test' }))
       const mock = getMock(result.agent)
-      mock.emit('onTextMessageContentEvent', { textMessageBuffer: 'partial...' })
+      mock.emit('onTextMessageContentEvent', { event: { delta: 'partial...' }, textMessageBuffer: '' })
 
       result.abort()
 
@@ -426,7 +454,7 @@ describe('useAgent', () => {
       mock.runAgent.mockResolvedValueOnce({ runId: 'r1' })
       await result.send('hello')
       mock.emit('onRunErrorEvent', { event: { message: 'oops', code: 'internal' } })
-      mock.emit('onTextMessageContentEvent', { textMessageBuffer: 'streaming...' })
+      mock.emit('onTextMessageContentEvent', { event: { delta: 'streaming...' }, textMessageBuffer: '' })
 
       result.reset()
 

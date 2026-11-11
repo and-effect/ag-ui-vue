@@ -423,8 +423,10 @@ export function useAgent(options: UseAgentOptions): UseAgentReturn {
       messages.value = [...agent.messages]
     },
 
-    onTextMessageContentEvent({ textMessageBuffer }) {
-      streamingContent.value = textMessageBuffer
+    onTextMessageContentEvent({ event, textMessageBuffer }) {
+      // The client calls subscribers before it appends the delta, so the
+      // buffer is the text *without* this event's delta.
+      streamingContent.value = textMessageBuffer + event.delta
     },
 
     onTextMessageEndEvent() {
