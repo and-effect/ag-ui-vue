@@ -75,6 +75,11 @@
     "vue-tsc": "^3.3.14",
     "zod": "^4.6.7"
   },
+  "overrides": {
+    "@microsoft/api-extractor": {
+      "minimatch": "^10.2.6"
+    }
+  },
   "workspaces": [
     "examples/playground"
   ]
