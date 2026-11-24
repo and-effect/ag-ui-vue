@@ -7,7 +7,7 @@ export default defineConfig({
     dts({
       include: ['src/**/*.ts'],
       exclude: ['src/__tests__'],
-      rollupTypes: true,
+      bundleTypes: true,
     }),
   ],
   build: {
