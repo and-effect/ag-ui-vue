@@ -17,7 +17,7 @@ export default defineConfig({
   optimizeDeps: {
     // Demos are lazy routes; listing their deps up front stops Vite from
     // discovering them mid-navigation and force-reloading the page.
-    include: ['@lucide/vue', 'reka-ui', 'marked', 'dompurify', 'zod', '@vueuse/core'],
+    include: ['@lucide/vue', 'reka-ui', 'marked', 'dompurify', 'zod', '@vueuse/core', 'echarts'],
   },
   define: {
     // @ag-ui/client reads process.env

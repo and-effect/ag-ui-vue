@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Examples
+- New **Dashboard chat** demo: a chat beside an ECharts dashboard of Gapminder data. It answers questions with numbers from a backend query tool, sets the dashboard filters with a frontend tool, and adds generated charts to the dashboard with `useGenerativeUI`.
+
 ## [0.5.1] - 2026-11-11
 
 ### Fixed

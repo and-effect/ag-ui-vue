@@ -8,6 +8,7 @@ from fastapi import FastAPI
 
 from app.routers import (
     backend_tools,
+    dashboard_chat,
     feedback,
     frontend_tools,
     generative_ui,
@@ -23,7 +24,7 @@ from app.settings import settings
 
 app = FastAPI(title="ag-ui-vue playground")
 
-for module in (backend_tools, frontend_tools, shared_state, generative_ui, multimodal, hitl, interrupts, feedback, page_context, reasoning, project_canvas):
+for module in (backend_tools, frontend_tools, shared_state, generative_ui, multimodal, hitl, interrupts, feedback, page_context, reasoning, project_canvas, dashboard_chat):
     app.include_router(module.router, prefix="/api")
 
 

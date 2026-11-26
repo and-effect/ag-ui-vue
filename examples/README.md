@@ -6,6 +6,7 @@ One Vue app — the **playground** — with a page per feature, backed by one Py
 examples/
   playground/   Vite + Vue 3 + vue-router, styled with Tailwind v4 + shadcn-vue
   backend/      FastAPI app, one AG-UI endpoint per demo
+  data/         datasets shared by both (the dashboard demo's Gapminder excerpt)
 ```
 
 | Demo | Shows | View | Backend |
@@ -21,6 +22,7 @@ examples/
 | Page context | `useAgent({ context })` — the case file the user has open, re-sent on every request incl. tool follow-ups | `PageContextView.vue` | `page_context.py` |
 | Run identity | `runForMessage`, `messageRuns`, `forwardedProps` — per-message feedback joined to server traces | `RunFeedbackView.vue` | `feedback.py` |
 | Project canvas | shared state + five approval tools in one app | `ProjectCanvasView.vue` | `project_canvas.py` |
+| Dashboard chat | a chat beside an ECharts dashboard: `context` (filters + chart descriptions), a backend query tool, `useFrontendTool` to set filters, `useGenerativeUI` rendering charts into the dashboard | `DashboardChatView.vue` | `dashboard_chat.py` |
 
 ## Running
 
@@ -54,3 +56,7 @@ cd examples/backend && OPENAI_MODEL=test uv run uvicorn app.api:app --reload
 - **`components/ui/` is vendored shadcn-vue.** Add more with `npx shadcn-vue@latest add <name>` from `examples/playground`. Theme tokens (neutral palette, one success/warning accent, dark mode via a `.dark` class) live in `src/styles/main.css`.
 
 To add a demo, create `views/<Name>View.vue` and a router in `backend/app/routers/`, include the router in `app/api.py`, then add a route with `meta.demo` in `src/router/index.ts`. The sidebar, overview card and Code tab all read from that route entry.
+
+## Data
+
+`data/gapminder.json` is the Gapminder excerpt from Jenny Bryan's [`gapminder`](https://github.com/jennybc/gapminder) R package (CC0 on [CRAN](https://cran.r-project.org/package=gapminder)): 142 countries, 1952–2007 in 5-year steps. The columns are renamed to `life_expectancy`, `gdp_per_capita` and `population`. The underlying data is Gapminder's: based on free material from [www.gapminder.org](https://www.gapminder.org/data/), [CC-BY licence](https://creativecommons.org/licenses/by/4.0/).

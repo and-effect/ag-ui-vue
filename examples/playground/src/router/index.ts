@@ -2,6 +2,7 @@ import type { Component } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import {
   Brain,
+  ChartColumn,
   Clock,
   Image,
   Layers,
@@ -254,6 +255,28 @@ export const router = createRouter({
             'views/ProjectCanvasView.vue',
             'components/ProjectCanvasBoard.vue',
             'backend/routers/project_canvas.py',
+            CHAT_PANEL,
+          ],
+        },
+      },
+    },
+    {
+      path: '/dashboard-chat',
+      component: () => import('@/views/DashboardChatView.vue'),
+      meta: {
+        demo: {
+          title: 'Dashboard chat',
+          description:
+            'A chat beside an existing dashboard: it answers questions about the charts, sets the filters, and adds new charts to the page.',
+          group: 'Showcase',
+          icon: ChartColumn,
+          apis: ['context', 'useFrontendTool', 'useGenerativeUI'],
+          endpoint: '/api/dashboard-chat',
+          sources: [
+            'views/DashboardChatView.vue',
+            'components/dashboard/EChartCard.vue',
+            'lib/dashboardCharts.ts',
+            'backend/routers/dashboard_chat.py',
             CHAT_PANEL,
           ],
         },

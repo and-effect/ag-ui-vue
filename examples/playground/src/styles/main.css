@@ -29,6 +29,18 @@
   --success: oklch(0.6 0.13 155);
   --warning: oklch(0.72 0.15 70);
   --sidebar: oklch(0.985 0 0);
+  /* Charts (dashboard demo). Hex, because ECharts draws on canvas and does not parse oklch.
+     Series slots in a fixed, colour-blind-checked order; chrome for axes and grid. */
+  --chart-1: #257de0;
+  --chart-2: #f47230;
+  --chart-3: #00b894;
+  --chart-4: #f2a600;
+  --chart-5: #ee7fac;
+  --chart-text: #666666;
+  --chart-grid: #e7e7e7;
+  --chart-axis: #c2c2c2;
+  --chart-tooltip: #ffffff;
+  --chart-tooltip-text: #191919;
 }
 
 .dark {
@@ -53,6 +65,16 @@
   --success: oklch(0.72 0.14 155);
   --warning: oklch(0.8 0.14 75);
   --sidebar: oklch(0.165 0 0);
+  --chart-1: #338ced;
+  --chart-2: #e76624;
+  --chart-3: #00a888;
+  --chart-4: #d28e05;
+  --chart-5: #e24d8b;
+  --chart-text: #9c9c9c;
+  --chart-grid: #303030;
+  --chart-axis: #474747;
+  --chart-tooltip: #262626;
+  --chart-tooltip-text: #efefef;
 }
 
 @theme inline {

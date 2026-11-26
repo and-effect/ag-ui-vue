@@ -47,7 +47,7 @@ import { Button } from '@/components/ui/button'
 import { getHighlighter } from '@/lib/highlighter'
 
 const { sources, endpoint } = defineProps<{
-  /** Keys of `loaders` below, e.g. `views/ThreadsView.vue` or `backend/routers/hitl.py`. */
+  /** Keys of `loaders` below, e.g. `views/ThreadsView.vue`, `lib/gapminder.ts` or `backend/routers/hitl.py`. */
   sources: string[]
   endpoint: string
 }>()
@@ -56,7 +56,8 @@ const { copy, copied } = useClipboard()
 
 const loaders = normalize({
   ...import.meta.glob<string>('../views/*.vue', { query: '?raw', import: 'default' }),
-  ...import.meta.glob<string>('./*.vue', { query: '?raw', import: 'default' }),
+  ...import.meta.glob<string>(['./*.vue', './dashboard/*.vue'], { query: '?raw', import: 'default' }),
+  ...import.meta.glob<string>('../lib/*.ts', { query: '?raw', import: 'default' }),
   ...import.meta.glob<string>('../../../backend/app/**/*.py', { query: '?raw', import: 'default' }),
 })
 
@@ -89,6 +90,7 @@ function normalize(globbed: Record<string, () => Promise<string>>) {
     Object.entries(globbed).map(([key, load]) => [
       key
         .replace(/^\.\.\/views\//, 'views/')
+        .replace(/^\.\.\/lib\//, 'lib/')
         .replace(/^\.\//, 'components/')
         .replace(/^\.\.\/\.\.\/\.\.\/backend\/app\//, 'backend/'),
       load,
